@@ -48,7 +48,7 @@ python3 boid_control.py
 
 ---
 
-## System Architecture
+## System architecture
 
 Our robot uses a real-time perception-decision-control loop that runs every 100ms:
 
