@@ -8,14 +8,15 @@ TURNING_FORCE = 2 # lateral steering force
 MOTOR_DELAY = 0.8 # delay for motor movement (seconds)
 VIEW_ANGLE = 150 # field of view (degrees)
 
-# Vision parameters
-# HSV color ranges (Hue: 0-179, Saturation: 0-255, Value: 0-255)
+# Vision parameters, HSV color ranges (Hue: 0-179, Saturation: 0-255, Value: 0-255)
+# RGB ---> HSV threshold inequalities
+# (0-179, start at 100: ignore washed blues, start at 100: ignore dark blues)
 BLUE_HSV_LOWER = np.array([110, 100, 100])
 BLUE_HSV_UPPER = np.array([130, 255, 255])
 
+# Hue circular so need two masks to capture all red
 RED_HSV_LOWER1 = np.array([0, 150, 150])
 RED_HSV_UPPER1 = np.array([10, 255, 255])
-
 RED_HSV_LOWER2 = np.array([170, 150, 150])
 RED_HSV_UPPER2 = np.array([180, 255, 255])
 
