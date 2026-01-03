@@ -1,8 +1,8 @@
 # Troubleshooting guide
 
-Solutions for common issues with Invisible Networks.
+Solutions for common issues with 'Invisible Network'
 
-## Camera sssues
+## Camera issues
 
  ```RuntimeError: Camera is not detected ```
 
