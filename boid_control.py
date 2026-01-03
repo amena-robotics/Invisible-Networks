@@ -4,16 +4,16 @@ import time
 from picamzero import Camera
 import fish_detection as fd
 
-from config import MAX_SPEED, TURNING_FORCE, VIEW ANGLE, MOTOR_DELAY, GPIO_PINS, MAIN_LOOP_DELAY
+from config import MAX_SPEED, TURNING_FORCE, VIEW_ANGLE, MOTOR_DELAY, GPIO_PINS, MAIN_LOOP_DELAY
 
 GPIO.setmode(GPIO.BOARD)
-GPIO.setup(MOTOR_PIN1, GPIO.OUT)
-GPIO.setup(MOTOR_PIN2, GPIO.OUT)
-GPIO.setup(ENABLE_PIN, GPIO.OUT) # If LOW, no movement
-GPIO.setup(LED_PIN, GPIO.OUT)
-GPIO.setup(WATER_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Set as input
-GPIO.output(ENABLE_PIN, GPIO.LOW)  # Disable motor driver initially
-GPIO.output(LED_PIN, GPIO.HIGH)  # Turn on LED/ replace by logic
+GPIO.setup(GPIO_PINS['MOTOR_PIN1'], GPIO.OUT)
+GPIO.setup(GPIO_PINS['MOTOR_PIN2'], GPIO.OUT)
+GPIO.setup(GPIO_PINS['ENABLE_PIN'], GPIO.OUT) # If LOW, no movement
+GPIO.setup(GPIO_PINS['LED_PIN'], GPIO.OUT)
+GPIO.setup(GPIO_PINS['WATER_PIN'], GPIO.IN, pull_up_down=GPIO.PUD_UP) # Set as input
+GPIO.output(GPIO_PINS['ENABLE_PIN'], GPIO.LOW) # Disable motor driver initially
+GPIO.output(GPIO_PINS['LED_PIN'], GPIO.HIGH) # Turn on LED/ replace by logic
 
 # Boid class in 2D plane
 class Boid:
@@ -71,9 +71,9 @@ class Boid:
         else:
             print('Stopping motor')
             # If not in water or not moving forward disable the motor driver
-            GPIO.output(ENABLE_PIN, GPIO.LOW)
-            GPIO.output(MOTOR_PIN1, GPIO.LOW)
-            GPIO.output(MOTOR_PIN2, GPIO.LOW)
+            GPIO.output(GPIO_PINS['ENABLE_PIN'], GPIO.LOW)
+            GPIO.output(GPIO_PINS['MOTOR_PIN1'], GPIO.LOW)
+            GPIO.output(GPIO_PINS['MOTOR_PIN2'], GPIO.LOW)
 
     def move_tail(self):
         print('Swimming forwards')
@@ -87,16 +87,15 @@ class Boid:
 
     def _move_motor(self, pin1_state, pin2_state):
         # Control the motor driver.
-        GPIO.output(ENABLE_PIN, GPIO.HIGH)
-        GPIO.output(MOTOR_PIN1, pin1_state)
-        GPIO.output(MOTOR_PIN2, pin2_state)
+        GPIO.output(GPIO_PINS['ENABLE_PIN'], GPIO.HIGH)
+        GPIO.output(GPIO_PINS['MOTOR_PIN1'], pin1_state)
+        GPIO.output(GPIO_PINS['MOTOR_PIN2'], pin2_state)
 
     def _stop_motor(self):
         # Stop the motor and disable the motor driver
-        GPIO.output(ENABLE_PIN, GPIO.LOW)
-        GPIO.output(MOTOR_PIN1, GPIO.LOW)
-        GPIO.output(MOTOR_PIN2, GPIO.LOW)
-
+        GPIO.output(GPIO_PINS['ENABLE_PIN'], GPIO.LOW)
+        GPIO.output(GPIO_PINS['MOTOR_PIN1'], GPIO.LOW)
+        GPIO.output(GPIO_PINS['MOTOR_PIN2'], GPIO.LOW)
 
 def main():
     camera = Camera()  # Initialise camera in main script to save time of it turning on every cycle
@@ -108,17 +107,17 @@ def main():
     try:
         while True:
             try:
-                fishes, obstacles = fd.findfish(camera)
+                fishes, obstacles = fd.find_fish(camera)
                 print(f'Fish positions: {fishes}')
                 print(f'Obstacle positions: {obstacles}')
 
                 central_boid.flock(fishes, obstacles)
                 central_boid.update()
 
-                in_water = not GPIO.input(WATER_PIN)
+                in_water = not GPIO.input(GPIO_PINS['WATER_PIN'])
                 central_boid.control_tail(in_water)
 
-                time.sleep(0.1)
+                time.sleep(MAIN_LOOP_DELAY)
             except:
                 print("Error occured")
                 break
