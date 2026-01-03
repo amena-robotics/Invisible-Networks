@@ -53,7 +53,7 @@ python3 boid_control.py
 Our robot uses a real-time perception-decision-control loop that runs every 100ms:
 
 <div style="display: flex; justify-content: center;">
-  <img width="654" height="649" alt="System Architecture Flowchart" src="https://github.com/user-attachments/assets/b701c7b6-4a6e-42e3-b528-a4f52bdc4699" />
+  <img width="654" height="649" alt="System Architecture Flowchart" src="https://github.com/user-attachments/assets/cbfefe6a-ec7a-4d86-807e-f251a29d5f85" />
 </div>
 
 ---
