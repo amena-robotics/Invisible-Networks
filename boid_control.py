@@ -4,16 +4,7 @@ import time
 from picamzero import Camera
 import fish_detection as fd
 
-MAX_SPEED = 4  # Max speed
-TURNING_FORCE = 2  # Turning force
-VIEW_ANGLE = np.radians(150)  # 150 degrees field of view
-MOTOR_DELAY = 0.8  # Delay for motor movement (tail wagging)
-
-MOTOR_PIN1 = 10  # L293D input 1
-MOTOR_PIN2 = 12  # L293D input 2
-ENABLE_PIN = 8  # L293D enable pin
-WATER_PIN = 22  # water sensor
-LED_PIN = 36  # LED
+from config import MAX_SPEED, TURNING_FORCE, VIEW ANGLE, MOTOR_DELAY, GPIO_PINS, MAIN_LOOP_DELAY
 
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(MOTOR_PIN1, GPIO.OUT)
