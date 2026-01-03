@@ -22,7 +22,7 @@ Solutions for common issues with 'Invisible Network'
 
 ---
 
-Python & Dependencies
+## Python & dependencies
 
 ```ModuleNotFoundError: No module named 'picamzero'```
 
@@ -45,7 +45,7 @@ Python & Dependencies
 
 ---
 
-GPIO & motor issues
+## GPIO & motor issues
 
 ```RuntimeError: No access to /dev/mem. Try running as root!```
 
@@ -94,7 +94,7 @@ Motor not spinning when script running
 
 ---
 
-Fish not detected ([] every frame)
+## Fish not detected ([] every frame)
 
 1. Check lighting conditions (HSV is sensitive to light)
 
@@ -111,7 +111,7 @@ Adjust HSV thresholds in config.py:
 
 ---
 
-Water sensor issues
+## Water sensor issues
 
 Test:
 
