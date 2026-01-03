@@ -2,20 +2,20 @@ import numpy as np
 import cv2
 from picamzero import Camera
 
-# RGB ---> HSV threshold inequalities
-# (0-179, start at 100: ignore washed blues, start at 100: ignore dark blues)
-blue_hsv_range = (np.array([110, 100, 100]), np.array([130, 255, 255]))
-# Hue circular so need two masks to capture all red
-red_hsv_range1 = (np.array([0, 150, 150]), np.array([10, 255, 255]))
-red_hsv_range2 = (np.array([170, 150, 150]), np.array([180, 255, 255]))
+from config import (
+    BLUE_HSV_LOWER, BLUE_HSV_UPPER,
+    RED_HSV_LOWER1, RED_HSV_UPPER1,
+    RED_HSV_LOWER2, RED_HSV_UPPER2,
+    KERNEL_SIZE, KERNEL_ITERATIONS, MIN_CONTOUR_AREA
+)
 
-def preprocess_mask(mask, kernel_size = 5, iterations = 1):
+def preprocess_mask(mask, kernel_size = KERNEL_SIZE, iterations = KERNEL_ITERATIONS):
     kernel = np.ones((kernel_size, kernel_size), np.uint8)
     mask = cv2.erode(mask, kernel, iterations=iterations) # Delete noise smalled than 5x5 kernel
     mask = cv2.dilate(mask, kernel, iterations=iterations) # Regrow object but do not include deleted noise
     return mask
 
-def find_contours(mask, min_area = 1000):
+def find_contours(mask, min_area = MIN_CONTOUR_AREA):
     # Convert binary mask into vectors
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     coordinates = []
@@ -37,7 +37,7 @@ def calculate_positions(coordinates, image_width):
         positions.append(position)
     return positions
 
-def find_fish(camera, min_area = 1000, kernel_size = 5):
+def find_fish(camera, min_area = MIN_CONTOUR_AREA, kernel_size = KERNEL_SIZE):
     #Detect blue fish and red obstacle
     try:
         image = camera.capture_array() # Capture image from the camera
@@ -45,17 +45,14 @@ def find_fish(camera, min_area = 1000, kernel_size = 5):
         img_width = image.shape[1]
 
         # Detecting neighbours
-        lower_blue_hsv, upper_blue_hsv = blue_hsv_range
-        blue_mask = cv2.inRange(hsv, lower_blue_hsv, upper_blue_hsv)
+        blue_mask = cv2.inRange(hsv, BLUE_HSV_LOWER, BLUE_HSV_UPPER)
         blue_mask = preprocess_mask(blue_mask, kernel_size) # Cleans noise
         blue_coordinates = find_contours(blue_mask, min_area)
         blue_positions = calculate_positions(blue_coordinates, img_width)
 
         # Red obstacle detection
-        lower_red_hsv1, upper_red_hsv1 = red_hsv_range1
-        lower_red_hsv2, upper_red_hsv2 = red_hsv_range2
-        red_mask1 = cv2.inRange(hsv, lower_red_hsv1, upper_red_hsv1)
-        red_mask2 = cv2.inRange(hsv, lower_red_hsv2, upper_red_hsv2)
+        red_mask1 = cv2.inRange(hsv, RED_HSV_LOWER1, RED_HSV_UPPER1)
+        red_mask2 = cv2.inRange(hsv, RED_HSV_LOWER2, RED_HSV_UPPER2)
         red_mask = cv2.bitwise_or(red_mask1, red_mask2)
         red_mask = preprocess_mask(red_mask, kernel_size)
         red_coordinates = find_contours(red_mask, min_area)
